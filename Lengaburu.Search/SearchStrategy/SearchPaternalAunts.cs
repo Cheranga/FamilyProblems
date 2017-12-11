@@ -8,6 +8,11 @@ namespace Lengaburu.Core.Search.SearchStrategy
 {
     public class SearchPaternalAunts : BaseSearchRelationship
     {
+        public override string Name
+        {
+            get { return "Paternal Aunt"; }
+        }
+
         public override Status<IReadOnlyList<ICitizen>> Find(ICitizen citizen)
         {
             var status = IsValid(citizen);

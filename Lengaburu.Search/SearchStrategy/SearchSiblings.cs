@@ -13,6 +13,11 @@ namespace Lengaburu.Core.Search.SearchStrategy
             get { return "There are no siblings"; }
         }
 
+        public override string Name
+        {
+            get { return "Sibling"; }
+        }
+
         protected override Status<bool> IsValid(ICitizen citizen)
         {
             var status = base.IsValid(citizen).IsValid && citizen.Father != null;
@@ -34,7 +39,7 @@ namespace Lengaburu.Core.Search.SearchStrategy
                     Message = status.Message
                 };
             }
-            
+
             var siblings = citizen.Father.Children.Where(x => x != citizen).ToList();
 
             if (siblings.Any() == false)

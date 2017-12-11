@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Lengaburu.Business;
-using Lengaburu.Core.Interfaces;
 using Lengaburu.Core.Models;
 using Lengaburu.Core.Search.Factories;
+using Lengaburu.Core.Search.Identifier;
 using Lengaburu.Core.Search.SearchStrategy;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using IdentifierByName = Lengaburu.Core.Search.Identifier.IdentifierByName;
 
 namespace Lengaburu.Tests
 {
@@ -40,28 +38,27 @@ namespace Lengaburu.Tests
         private void InitRegistrar()
         {
             var uniqueSearch = new IdentifierByName();
-            var searchStrategies = new Dictionary<string, ISearchRelationships>
-            {
-                {"paternaluncles", new SearchPaternalUncles()},
-                {"maternaluncles", new SearchMaternalUncles()},
-                {"paternalaunts", new SearchPaternalAunts()},
-                {"maternalaunts", new SearchMaternalAunts()},
-                {"sisterinlaws", new SearchSisterInLaws()},
-                {"brotherinlaws", new SearchBrotherInLaws()},
-                {"cousins", new SearchCousins(new SearchSiblings(), new SearchChildren())},
-                {"father", new SearchFather()},
-                {"mother", new SearchMother()},
-                {"children", new SearchChildren()},
-                {"sons", new SearchSons()},
-                {"daughters", new SearchDaughters()},
-                {"brothers", new SearchBrothers()},
-                {"sisters", new SearchSisters()},
-                {"granddaughters", new SearchGrandDaughters()},
-                {"grandchildren", new SearchGrandChildren()},
-                {"thegirlchild", new SearchTheGirlChild(new SearchGrandChildren(), new SearchDaughters())}
-            };
 
-            var searchFactory = new SearchFactory(searchStrategies);
+            var searchFactory = new SearchFactory();
+            searchFactory.RegisterSearch("paternaluncles", new SearchPaternalUncles(), -1);
+            searchFactory.RegisterSearch("maternaluncles", new SearchMaternalUncles(), -1);
+            searchFactory.RegisterSearch("paternalaunts", new SearchPaternalAunts(), -1);
+            searchFactory.RegisterSearch("maternalaunts", new SearchMaternalAunts(), -1);
+            searchFactory.RegisterSearch("sisterinlaws", new SearchSisterInLaws(), 0);
+            searchFactory.RegisterSearch("brotherinlaws", new SearchBrotherInLaws(), 0);
+            searchFactory.RegisterSearch("cousins", new SearchCousins(new SearchSiblings(), new SearchChildren()), 0);
+            searchFactory.RegisterSearch("father", new SearchFather(), -1);
+            searchFactory.RegisterSearch("mother", new SearchMother(), -1);
+            searchFactory.RegisterSearch("children", new SearchChildren(), 1);
+            searchFactory.RegisterSearch("sons", new SearchSons(), 1);
+            searchFactory.RegisterSearch("daughters", new SearchDaughters(), 1);
+            searchFactory.RegisterSearch("siblings", new SearchSiblings(), 0);
+            searchFactory.RegisterSearch("brothers", new SearchBrothers(), 0);
+            searchFactory.RegisterSearch("sisters", new SearchSisters(), 0);
+            searchFactory.RegisterSearch("grandchildren", new SearchGrandChildren(), 2);
+            searchFactory.RegisterSearch("granddaughters", new SearchGrandDaughters(), 2);
+            searchFactory.RegisterSearch("grandsons", new SearchGrandSons(), 2);
+            searchFactory.RegisterSearch("thegirlchild", new SearchTheGirlChild(new SearchGrandChildren(), new SearchDaughters()), 2);
 
             _registrar = new Registrar(uniqueSearch, searchFactory);
         }
@@ -91,7 +88,7 @@ namespace Lengaburu.Tests
             var lavnya = new Citizen("Lavnya", Sex.Female);
             var kriya = new Citizen("Kriya", Sex.Male);
             var misa = new Citizen("Misa", Sex.Male);
-            
+
             _registrar.AddChild(kingShan, ish);
             _registrar.AddChild(kingShan, chit);
             _registrar.AddChild(kingShan, vich);
@@ -133,42 +130,6 @@ namespace Lengaburu.Tests
         }
 
         #endregion
-
-        //private ICitizen _root;
-
-        //[TestInitialize]
-        //public void TestInitialize()
-        //{
-        //    var shanFamily = new Citizen("King Shan", Sex.Male).AddPartner("Queen Anga", Sex.Female);
-
-        //    var chitFamily = new Citizen("Chit", Sex.Male).AddPartner("Ambi", Sex.Female);
-        //    var vichFamily = new Citizen("Vich", Sex.Male).AddPartner("Lika", Sex.Female);
-        //    var satyaFamily = new Citizen("Satya", Sex.Female).AddPartner("Vyan", Sex.Male);
-
-        //    var dritaFamily = new Citizen("Drita", Sex.Male).AddPartner("Jaya", Sex.Female);
-        //    var vilaFamily = new Citizen("Vila", Sex.Male).AddPartner("Jnki", Sex.Female);
-        //    var chikaFamily = new Citizen("Chika", Sex.Female).AddPartner("Kpila", Sex.Male);
-        //    var satvyFamily = new Citizen("Satvy", Sex.Female).AddPartner("Asva", Sex.Male);
-        //    var savyaFamily = new Citizen("Savya", Sex.Male).AddPartner("Krpi", Sex.Female);
-        //    var sayanFamily = new Citizen("Saayan", Sex.Male).AddPartner("Mina", Sex.Female);
-
-        //    var driyaFamily = new Citizen("Driya", Sex.Female).AddPartner("Mnu", Sex.Male);
-        //    var lavnyaFamily = new Citizen("Lavnya", Sex.Female).AddPartner("Gru", Sex.Male);
-
-        //    //
-        //    // Adding children
-        //    //
-        //    shanFamily.AddChild("Ish", Sex.Male).AddChild(chitFamily).AddChild(vichFamily).AddChild(satyaFamily);
-        //    chitFamily.AddChild(dritaFamily).AddChild("Vrita", Sex.Male);
-        //    vichFamily.AddChild(vilaFamily).AddChild(chikaFamily);
-        //    satyaFamily.AddChild(satvyFamily).AddChild(savyaFamily).AddChild(sayanFamily);
-        //    dritaFamily.AddChild("Jata", Sex.Male).AddChild(driyaFamily);
-        //    vilaFamily.AddChild(lavnyaFamily);
-        //    savyaFamily.AddChild("Kriya", Sex.Male);
-        //    sayanFamily.AddChild("Misa", Sex.Male);
-
-        //    _root = shanFamily;
-        //}
 
         #region Paternal Uncles
 

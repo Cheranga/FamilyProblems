@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using Lengaburu.Core.Interfaces;
 using Lengaburu.Core.Models;
 
@@ -17,6 +14,11 @@ namespace Lengaburu.Core.Search.SearchStrategy
         protected override Func<ICitizen, bool> Filter
         {
             get { return x => x.Sex == Sex.Female; }
+        }
+
+        public override string Name
+        {
+            get { return "Sister in Law"; }
         }
     }
 }

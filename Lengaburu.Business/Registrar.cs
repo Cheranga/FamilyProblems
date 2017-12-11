@@ -18,76 +18,7 @@ namespace Lengaburu.Business
             _factory = factory;
             _citizens = new List<ICitizen>();
         }
-
-        //private void InitCitizens()
-        //{
-        //    _citizens = new List<ICitizen>();
-
-        //    var kingShan = new Citizen("King Shan", Sex.Male);
-        //    _citizens.Add(kingShan);
-
-        //    AddPartner(kingShan, new Citizen("Queen Anga", Sex.Female));
-
-        //    var ish = new Citizen("Ish",Sex.Male);
-        //    var chit = new Citizen("Chit", Sex.Male);
-        //    var vich = new Citizen("Vich", Sex.Male);
-        //    var satya = new Citizen("Satya", Sex.Female);
-
-        //    var drita = new Citizen("Drita", Sex.Male);
-        //    var vrita = new Citizen("Vrita", Sex.Male);
-        //    var vila = new Citizen("Vila", Sex.Male);
-        //    var chika = new Citizen("Chika", Sex.Female);
-        //    var satvy = new Citizen("Satvy", Sex.Female);
-        //    var savya = new Citizen("Savya", Sex.Male);
-        //    var sayan = new Citizen("Saayan", Sex.Male);
-
-        //    var jata = new Citizen("Jata", Sex.Male);
-        //    var driya = new Citizen("Driya", Sex.Female);
-        //    var lavnya = new Citizen("Lavnya", Sex.Female);
-        //    var kriya = new Citizen("Kriya", Sex.Male);
-        //    var misa = new Citizen("Misa", Sex.Male);
-
-
-        //    AddPartner(chit, new Citizen("Ambi", Sex.Female));
-        //    AddPartner(vich, new Citizen("Lika", Sex.Female));
-        //    AddPartner(satya, new Citizen("Vyan", Sex.Male));
-
-        //    AddPartner(drita, new Citizen("Jaya", Sex.Female));
-        //    AddPartner(vila, new Citizen("Jnki", Sex.Female));
-        //    AddPartner(chika, new Citizen("Kpila", Sex.Male));
-        //    AddPartner(satvy, new Citizen("Asva", Sex.Male));
-        //    AddPartner(savya, new Citizen("Krpi", Sex.Female));
-        //    AddPartner(sayan, new Citizen("Mina", Sex.Female));
-
-        //    AddPartner(driya, new Citizen("Minu", Sex.Male));
-        //    AddPartner(lavnya, new Citizen("Gru", Sex.Male));
-
-        //    AddChild(kingShan, ish);
-        //    AddChild(kingShan, chit);
-        //    AddChild(kingShan, vich);
-        //    AddChild(kingShan, satya);
-
-        //    AddChild(chit, drita);
-        //    AddChild(chit, vrita);
-
-        //    AddChild(vich, vila);
-        //    AddChild(vich, chika);
-
-        //    AddChild(satya, satvy);
-        //    AddChild(satya, savya);
-        //    AddChild(satya, sayan);
-
-        //    AddChild(drita, jata);
-        //    AddChild(drita, driya);
-
-        //    AddChild(vila, lavnya);
-
-        //    AddChild(savya, kriya);
-
-        //    AddChild(sayan, misa);
-
-        //}
-
+        
         public Status AddCitizen(ICitizen citizen)
         {
             _citizens.Add(citizen);
@@ -302,11 +233,11 @@ namespace Lengaburu.Business
             };
         }
 
-        public Status<string> WhoAreYou(string myName, string yourName)
+        public Status<IEnumerable<string>> WhoAreYou(string myName, string yourName)
         {
             if (string.IsNullOrEmpty(myName) || string.IsNullOrEmpty(yourName))
             {
-                return new Status<string>
+                return new Status<IEnumerable<string>>
                 {
                     IsValid = false,
                     Message = "Both names are important"
@@ -316,7 +247,7 @@ namespace Lengaburu.Business
             var me = _identitySearch.FindAll(_citizens, myName);
             if (me.IsValid == false)
             {
-                return new Status<string>
+                return new Status<IEnumerable<string>>
                 {
                     IsValid = false,
                     Message = me.Message
@@ -326,7 +257,7 @@ namespace Lengaburu.Business
             var you = _identitySearch.FindAll(_citizens, yourName);
             if (you.IsValid == false)
             {
-                return new Status<string>
+                return new Status<IEnumerable<string>>
                 {
                     IsValid = false,
                     Message = you.Message
@@ -334,34 +265,44 @@ namespace Lengaburu.Business
             }
 
             var myGenLevel = me.Data.GenerationLevel;
-            var yourGenLevel = me.Data.GenerationLevel;
+            var yourGenLevel = you.Data.GenerationLevel;
 
-            //
-            // If the gen levels are same it can be a sibling or a cousin
-            //
-            if (myGenLevel == yourGenLevel)
+            var searches = _factory.GetSearchFor(myGenLevel, yourGenLevel);
+            if (searches.IsValid == false)
             {
-                
-            }
-            //
-            // If you are older than me, can be a parent, aunt/uncle, grand mother/father or way too old!
-            //
-            else if (yourGenLevel > myGenLevel)
-            {
-
-            }
-            //
-            // Can be a child, nephew/niece, grand child, or way too young!
-            //
-            else
-            {
-                
+                return new Status<IEnumerable<string>>
+                {
+                    IsValid = false,
+                    Message = "Cannot find a relationship between you"
+                };
             }
 
-            return new Status<string>
+            var relationships = new List<string>();
+            searches.Data.ToList().ForEach(x =>
+            {
+                var status = x.Find(me.Data);
+                if (status.IsValid)
+                {
+                    if (status.Data.Any(y => y == you.Data))
+                    {
+                        relationships.Add(x.Name);
+                    }
+                }
+            });
+
+            if (relationships.Any())
+            {
+                return new Status<IEnumerable<string>>
+                {
+                    IsValid = true,
+                    Data = relationships
+                };
+            }
+
+            return new Status<IEnumerable<string>>
             {
                 IsValid = false,
-                Message = "Not Implemented"
+                Message = "Cannot find a relationship between you"
             };
         }
     }

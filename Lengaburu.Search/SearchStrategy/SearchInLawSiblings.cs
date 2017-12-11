@@ -1,7 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using Lengaburu.Core.Interfaces;
 using Lengaburu.Core.Models;
 
@@ -12,6 +9,11 @@ namespace Lengaburu.Core.Search.SearchStrategy
         protected override string NotFoundMessage
         {
             get { return "There are no in laws"; }
+        }
+
+        public override string Name
+        {
+            get { return "In laws"; }
         }
 
         protected override Status<bool> IsValid(ICitizen citizen)
@@ -42,7 +44,7 @@ namespace Lengaburu.Core.Search.SearchStrategy
                 return new Status<IReadOnlyList<ICitizen>>
                 {
                     IsValid = false,
-                    Message = string.IsNullOrEmpty(NotFoundMessage)? "There are no in laws" : NotFoundMessage
+                    Message = string.IsNullOrEmpty(NotFoundMessage) ? "There are no in laws" : NotFoundMessage
                 };
             }
 
@@ -51,7 +53,6 @@ namespace Lengaburu.Core.Search.SearchStrategy
                 IsValid = true,
                 Data = partnersSiblings.Data
             });
-
         }
     }
 }

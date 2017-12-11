@@ -8,13 +8,18 @@ namespace Lengaburu.Core.Search.SearchStrategy
 {
     public class SearchTheGirlChild : BaseSearchRelationship
     {
-        private readonly SearchGrandChildren _searchGrandChildren;
         private readonly SearchDaughters _searchDaughters;
+        private readonly SearchGrandChildren _searchGrandChildren;
 
         public SearchTheGirlChild(SearchGrandChildren searchGrandChildren, SearchDaughters searchDaughters)
         {
             _searchGrandChildren = searchGrandChildren;
             _searchDaughters = searchDaughters;
+        }
+
+        public override string Name
+        {
+            get { return "The Girl Child"; }
         }
 
         public override Status<IReadOnlyList<ICitizen>> Find(ICitizen citizen)

@@ -9,7 +9,6 @@ namespace Lengaburu.Core.Models
     [DebuggerDisplay("{GenerationLevel} - {Name} - {Sex}")]
     public class Citizen : ICitizen
     {
-        private ICitizen _partner;
         private readonly List<ICitizen> _children;
 
         public Citizen(string name, Sex sex)
@@ -26,13 +25,7 @@ namespace Lengaburu.Core.Models
         public ICitizen Father { get; set; }
         public ICitizen Mother { get; set; }
 
-        public ICitizen Partner
-        {
-            get
-            {
-                return _partner;
-            }
-        }
+        public ICitizen Partner { get; private set; }
 
         public IReadOnlyList<ICitizen> Children
         {
@@ -56,8 +49,8 @@ namespace Lengaburu.Core.Models
                 throw new DoNotCheatException();
             }
 
-            _partner = partner;
-            partner.GenerationLevel = this.GenerationLevel;
+            Partner = partner;
+            partner.GenerationLevel = GenerationLevel;
 
             return this;
         }

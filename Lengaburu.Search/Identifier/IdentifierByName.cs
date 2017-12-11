@@ -30,7 +30,7 @@ namespace Lengaburu.Core.Search.Identifier
             }
 
             var citizensMappedByName = citizens.GroupBy(x => x.Name)
-                .ToDictionary(x => x.Key.ToUpper(), x => new { Count = x.Count(), Citizens = x.ToList() });
+                .ToDictionary(x => x.Key.ToUpper(), x => new {Count = x.Count(), Citizens = x.ToList()});
 
             if (citizensMappedByName.ContainsKey(search) == false)
             {

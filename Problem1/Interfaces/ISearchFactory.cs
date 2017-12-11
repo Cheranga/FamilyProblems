@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Lengaburu.Core.Models;
 
 namespace Lengaburu.Core.Interfaces
@@ -6,6 +7,8 @@ namespace Lengaburu.Core.Interfaces
     {
         Status<ISearchRelationships> GetSearch(string searchCriteria);
 
-        Status<bool> RegisterSearch(string searchCriteria, ISearchRelationships search);
+        Status<IEnumerable<ISearchRelationships>> GetSearchFor(int myLevel, int yourLevel);
+
+        Status<bool> RegisterSearch(string searchCriteria, ISearchRelationships search, int searchLevel);
     }
 }

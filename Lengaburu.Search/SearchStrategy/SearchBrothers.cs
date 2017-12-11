@@ -15,5 +15,10 @@ namespace Lengaburu.Core.Search.SearchStrategy
         {
             get { return x => x.Sex == Sex.Male; }
         }
+
+        public override string Name
+        {
+            get { return "Brother"; }
+        }
     }
 }

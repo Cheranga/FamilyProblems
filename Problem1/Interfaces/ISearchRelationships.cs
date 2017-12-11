@@ -5,6 +5,7 @@ namespace Lengaburu.Core.Interfaces
 {
     public interface ISearchRelationships
     {
+        string Name { get; }
         Status<IReadOnlyList<ICitizen>> Find(ICitizen citizen);
     }
 }

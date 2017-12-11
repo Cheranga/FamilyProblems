@@ -6,6 +6,11 @@ namespace Lengaburu.Core.Search.SearchStrategy
 {
     public class SearchParents : BaseSearchRelationship
     {
+        public override string Name
+        {
+            get { return "Parent"; }
+        }
+
         public override Status<IReadOnlyList<ICitizen>> Find(ICitizen citizen)
         {
             var father = new SearchFather().Find(citizen);

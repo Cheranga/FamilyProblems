@@ -6,7 +6,6 @@ namespace Lengaburu.Core.Exceptions
     {
         public DoNotCheatException(string message = "") : base(SetMessage(message))
         {
-            
         }
 
         private static string SetMessage(string message)

@@ -7,6 +7,11 @@ namespace Lengaburu.Core.Search.SearchStrategy
 {
     public class SearchFather : BaseSearchRelationship
     {
+        public override string Name
+        {
+            get { return "Father"; }
+        }
+
         protected override Status<bool> IsValid(ICitizen citizen)
         {
             var status = base.IsValid(citizen).IsValid && citizen.Father != null;
@@ -32,7 +37,7 @@ namespace Lengaburu.Core.Search.SearchStrategy
             return new Status<IReadOnlyList<ICitizen>>
             {
                 IsValid = true,
-                Data = new ReadOnlyCollection<ICitizen>(new[] { citizen.Father })
+                Data = new ReadOnlyCollection<ICitizen>(new[] {citizen.Father})
             };
         }
     }

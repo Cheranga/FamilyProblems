@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Lengaburu.Core.Interfaces;
 using Lengaburu.Core.Models;
@@ -14,13 +12,18 @@ namespace Lengaburu.Core.Search.SearchStrategy
             get { return "There are no children"; }
         }
 
+        public override string Name
+        {
+            get { return "Child"; }
+        }
+
         protected override Status<bool> IsValid(ICitizen citizen)
         {
             var status = base.IsValid(citizen).IsValid && (citizen.Children != null && citizen.Children.Any());
             return new Status<bool>
             {
                 IsValid = status,
-                Message = status? string.Empty :string.IsNullOrEmpty(NotFoundMessage)? "There are no children" : NotFoundMessage
+                Message = status ? string.Empty : string.IsNullOrEmpty(NotFoundMessage) ? "There are no children" : NotFoundMessage
             };
         }
 

@@ -9,6 +9,17 @@ namespace Lengaburu.Core.Search.SearchStrategy
 {
     public abstract class BaseSearchRelationship : ISearchRelationships
     {
+        protected virtual string NotFoundMessage
+        {
+            get { return "There are no specific relationships"; }
+        }
+
+        protected virtual Func<ICitizen, bool> Filter { get; }
+
+
+        public abstract Status<IReadOnlyList<ICitizen>> Find(ICitizen citizen);
+        public abstract string Name { get; }
+
         protected virtual Status<bool> IsValid(ICitizen citizen)
         {
             var status = citizen != null;
@@ -19,16 +30,6 @@ namespace Lengaburu.Core.Search.SearchStrategy
                 Message = status ? string.Empty : "Does not exist"
             };
         }
-
-        protected virtual string NotFoundMessage
-        {
-            get { return "There are no specific relationships"; }
-        }
-
-        protected virtual Func<ICitizen, bool> Filter { get; }
-
-
-        public abstract Status<IReadOnlyList<ICitizen>> Find(ICitizen citizen);
 
 
         protected Status<IReadOnlyList<ICitizen>> GetFilteredResults(Status<IReadOnlyList<ICitizen>> results)

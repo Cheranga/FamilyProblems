@@ -8,6 +8,11 @@ namespace Lengaburu.Core.Search.SearchStrategy
 {
     public class SearchMaternalUncles : BaseSearchRelationship
     {
+        public override string Name
+        {
+            get { return "Maternal Uncle"; }
+        }
+
         public override Status<IReadOnlyList<ICitizen>> Find(ICitizen citizen)
         {
             var status = IsValid(citizen);
@@ -50,6 +55,4 @@ namespace Lengaburu.Core.Search.SearchStrategy
             };
         }
     }
-
-
 }

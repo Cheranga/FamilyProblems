@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -12,6 +11,11 @@ namespace Lengaburu.Core.Search.SearchStrategy
         protected override string NotFoundMessage
         {
             get { return "There are no grand children"; }
+        }
+
+        public override string Name
+        {
+            get { return "Grand Child"; }
         }
 
         protected override Status<bool> IsValid(ICitizen citizen)
