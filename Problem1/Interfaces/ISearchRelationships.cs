@@ -1,10 +1,11 @@
 using System.Collections.Generic;
-using Problem1.Models;
+using Lengaburu.Core.Models;
 
-namespace Problem1.Interfaces
+namespace Lengaburu.Core.Interfaces
 {
     public interface ISearchRelationships
     {
+        string Name { get; }
         Status<IReadOnlyList<ICitizen>> Find(ICitizen citizen);
     }
 }

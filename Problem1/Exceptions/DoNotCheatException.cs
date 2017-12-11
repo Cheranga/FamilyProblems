@@ -1,12 +1,11 @@
 ﻿using System;
 
-namespace Problem1.Exceptions
+namespace Lengaburu.Core.Exceptions
 {
     public class DoNotCheatException : Exception
     {
         public DoNotCheatException(string message = "") : base(SetMessage(message))
         {
-            
         }
 
         private static string SetMessage(string message)

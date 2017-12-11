@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
+using Lengaburu.Core.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Problem1.Models;
 
-namespace FamilyProblems.Tests
+namespace Lengaburu.Tests
 {
     public partial class RegistrarTests
     {
@@ -20,7 +20,7 @@ namespace FamilyProblems.Tests
             //
             Assert.IsTrue(addChildStatus.IsValid);
             Assert.IsTrue(grandChildrenStatus.IsValid);
-            Assert.IsTrue(new[] { "vanya"}.All(x => grandChildrenStatus.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"vanya"}.All(x => grandChildrenStatus.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]

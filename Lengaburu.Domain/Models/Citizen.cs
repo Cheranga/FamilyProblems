@@ -4,11 +4,12 @@ using System.Diagnostics;
 using Lengaburu.Core.Exceptions;
 using Lengaburu.Core.Interfaces;
 
-namespace Lengaburu.Core.Models
+namespace Lengaburu.Domain.Models
 {
     [DebuggerDisplay("{GenerationLevel} - {Name} - {Sex}")]
     public class Citizen : ICitizen
     {
+        private ICitizen _partner;
         private readonly List<ICitizen> _children;
 
         public Citizen(string name, Sex sex)
@@ -25,7 +26,13 @@ namespace Lengaburu.Core.Models
         public ICitizen Father { get; set; }
         public ICitizen Mother { get; set; }
 
-        public ICitizen Partner { get; private set; }
+        public ICitizen Partner
+        {
+            get
+            {
+                return _partner;
+            }
+        }
 
         public IReadOnlyList<ICitizen> Children
         {
@@ -36,7 +43,7 @@ namespace Lengaburu.Core.Models
         {
             if (string.IsNullOrEmpty(name))
             {
-                throw new CitizenDoesNotExist();
+                throw new PersonDoesNotExist();
             }
 
             return AddPartner(new Citizen(name, sex));
@@ -49,8 +56,8 @@ namespace Lengaburu.Core.Models
                 throw new DoNotCheatException();
             }
 
-            Partner = partner;
-            partner.GenerationLevel = GenerationLevel;
+            _partner = partner;
+            partner.GenerationLevel = this.GenerationLevel;
 
             return this;
         }
@@ -59,7 +66,7 @@ namespace Lengaburu.Core.Models
         {
             if (string.IsNullOrEmpty(name))
             {
-                throw new CitizenDoesNotExist();
+                throw new PersonDoesNotExist();
             }
 
             var child = new Citizen(name, sex);
@@ -70,7 +77,7 @@ namespace Lengaburu.Core.Models
         {
             if (child == null)
             {
-                throw new CitizenDoesNotExist();
+                throw new PersonDoesNotExist();
             }
 
             child.GenerationLevel = GenerationLevel + 1;
