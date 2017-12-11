@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using Problem1.Models;
+using Lengaburu.Core.Models;
 
-namespace Problem1.Interfaces
+namespace Lengaburu.Core.Interfaces
 {
-    public interface IUniqueSearch<TSearch, TSearchResult>
+    public interface IUniqueIdentifier<TSearch, TSearchResult>
     {
         //Status<TSearchResult> Find(IEnumerable<ICitizen> citizens, TSearch search);
         Status<TSearchResult> FindAll(IEnumerable<ICitizen> citizens, TSearch search);

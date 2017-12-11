@@ -1,12 +1,11 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Problem1.Interfaces;
-using Problem1.Models;
+using Lengaburu.Core.Interfaces;
+using Lengaburu.Core.Models;
 
-namespace Problem1.SearchStrategy
+namespace Lengaburu.Core.SearchStrategy
 {
-    public class SearchByName : IUniqueSearch<string, ICitizen>
+    public class IdentifierByName : IUniqueIdentifier<string, ICitizen>
     {
         public Status<ICitizen> FindAll(IEnumerable<ICitizen> citizens, string search)
         {

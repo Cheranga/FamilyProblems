@@ -1,4 +1,4 @@
-﻿namespace Problem1.Models
+﻿namespace Lengaburu.Core.Models
 {
     public enum Sex
     {

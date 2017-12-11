@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Lengaburu.Business;
+using Lengaburu.Core;
+using Lengaburu.Core.Interfaces;
+using Lengaburu.Core.Models;
+using Lengaburu.Core.Search.Factories;
+using Lengaburu.Core.Search.SearchStrategy;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Problem1;
-using Problem1.Interfaces;
-using Problem1.Models;
-using Problem1.SearchStrategy;
+using IdentifierByName = Lengaburu.Core.Search.Identifier.IdentifierByName;
 
-namespace FamilyProblems.Tests
+namespace Lengaburu.Tests
 {
     [TestClass]
     public partial class RegistrarTests
@@ -17,7 +20,7 @@ namespace FamilyProblems.Tests
         [TestInitialize]
         public void Init()
         {
-            var uniqueSearch = new SearchByName();
+            var uniqueSearch = new IdentifierByName();
             var searchStrategies = new Dictionary<string, ISearchRelationships>
             {
                 {"paternaluncles", new SearchPaternalUncles()},

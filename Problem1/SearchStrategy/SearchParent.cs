@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using Problem1.Interfaces;
-using Problem1.Models;
+using Lengaburu.Core.Interfaces;
+using Lengaburu.Core.Models;
 
-namespace Problem1.SearchStrategy
+namespace Lengaburu.Core.SearchStrategy
 {
     public class SearchParent : BaseSearchRelationship
     {

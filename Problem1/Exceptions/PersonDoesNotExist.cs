@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Problem1.Exceptions
+namespace Lengaburu.Core.Exceptions
 {
     public class PersonDoesNotExist : Exception
     {

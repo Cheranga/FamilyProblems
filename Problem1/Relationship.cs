@@ -1,4 +1,4 @@
-﻿namespace Problem1
+﻿namespace Lengaburu.Core
 {
     public enum Relationship
     {

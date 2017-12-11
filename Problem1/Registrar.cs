@@ -1,21 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using Problem1.Interfaces;
-using Problem1.Models;
+using Lengaburu.Core.Interfaces;
+using Lengaburu.Core.Models;
 
-namespace Problem1
+namespace Lengaburu.Core
 {
     public class Registrar
     {
-        private readonly IUniqueSearch<string, ICitizen> _uniqueSearchByName;
+        private readonly IUniqueIdentifier<string, ICitizen> _uniqueIdentifierByName;
         private readonly ISearchFactory _factory;
         private List<ICitizen> _citizens;
 
-        public Registrar(IUniqueSearch<string, ICitizen> uniqueSearchByName, ISearchFactory factory)
+        public Registrar(IUniqueIdentifier<string, ICitizen> uniqueIdentifierByName, ISearchFactory factory)
         {
-            _uniqueSearchByName = uniqueSearchByName;
+            _uniqueIdentifierByName = uniqueIdentifierByName;
             _factory = factory;
             _citizens = new List<ICitizen>();
         }
@@ -151,7 +150,7 @@ namespace Problem1
             Status status = null;
             try
             {
-                var findParent = _uniqueSearchByName.FindAll(_citizens, parentName);
+                var findParent = _uniqueIdentifierByName.FindAll(_citizens, parentName);
                 if (findParent.IsValid == false)
                 {
                     return new Status
@@ -238,7 +237,7 @@ namespace Problem1
                 };
             }
 
-            var person = _uniqueSearchByName.FindAll(_citizens, name);
+            var person = _uniqueIdentifierByName.FindAll(_citizens, name);
             if (person.IsValid == false)
             {
                 return new Status<IReadOnlyList<ICitizen>>

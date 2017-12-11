@@ -6,8 +6,8 @@
     <ProjectGuid>{49213EC7-BD40-4A9A-AAF7-0573E209EE9A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FamilyProblems.Tests</RootNamespace>
-    <AssemblyName>FamilyProblems.Tests</AssemblyName>
+    <RootNamespace>Lengaburu.Tests</RootNamespace>
+    <AssemblyName>Lengaburu.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -58,9 +58,17 @@
     <Compile Include="Problem3Tests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Problem1\Problem1.csproj">
+    <ProjectReference Include="..\Lengaburu.Business\Lengaburu.Business.csproj">
+      <Project>{3EE6D4BB-D74F-4FED-8078-048B6F71A66C}</Project>
+      <Name>Lengaburu.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Lengaburu.Search\Lengaburu.Core.Search.csproj">
+      <Project>{6E6F8DAD-80BC-478F-878D-8304AB6DF5F4}</Project>
+      <Name>Lengaburu.Core.Search</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Problem1\Lengaburu.Core.csproj">
       <Project>{C7CC022C-0686-4745-BE6E-E90B136D6BF0}</Project>
-      <Name>Problem1</Name>
+      <Name>Lengaburu.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

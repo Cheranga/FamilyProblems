@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
+using Lengaburu.Core.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Problem1.Models;
 
-namespace FamilyProblems.Tests
+namespace Lengaburu.Tests
 {   
     public partial class RegistrarTests
     {

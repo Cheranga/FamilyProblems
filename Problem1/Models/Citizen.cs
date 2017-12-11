@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using Problem1.Exceptions;
-using Problem1.Interfaces;
+using Lengaburu.Core.Exceptions;
+using Lengaburu.Core.Interfaces;
 
-namespace Problem1.Models
+namespace Lengaburu.Core.Models
 {
     [DebuggerDisplay("{GenerationLevel} - {Name} - {Sex}")]
     public class Citizen : ICitizen
