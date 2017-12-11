@@ -7,16 +7,27 @@ using Problem1.Models;
 
 namespace Problem1.SearchStrategy
 {
-    public class SearchInLawSiblings : ISearchRelationships
+    public class SearchInLawSiblings : BaseSearchRelationship
     {
-        public virtual Status<IReadOnlyList<ICitizen>> Find(ICitizen citizen)
-        {   
-            if (citizen.Partner == null)
+        protected override Status<bool> IsValid(ICitizen citizen)
+        {
+            var status = base.IsValid(citizen).IsValid && (citizen.Partner != null);
+            return new Status<bool>
+            {
+                IsValid = status,
+                Message = status ? string.Empty : "There are no in laws"
+            };
+        }
+
+        public override Status<IReadOnlyList<ICitizen>> Find(ICitizen citizen)
+        {
+            var status = IsValid(citizen);
+            if (status.IsValid == false)
             {
                 return new Status<IReadOnlyList<ICitizen>>
                 {
                     IsValid = false,
-                    Message = "There are no in laws"
+                    Message = status.Message
                 };
             }
 

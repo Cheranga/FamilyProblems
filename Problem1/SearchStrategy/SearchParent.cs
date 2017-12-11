@@ -6,9 +6,9 @@ using Problem1.Models;
 
 namespace Problem1.SearchStrategy
 {
-    public class SearchParent : ISearchRelationships
+    public class SearchParent : BaseSearchRelationship
     {
-        public virtual Status<IReadOnlyList<ICitizen>> Find(ICitizen citizen)
+        public override Status<IReadOnlyList<ICitizen>> Find(ICitizen citizen)
         {
             var father = new SearchFather().Find(citizen);
             var mother = new SearchMother().Find(citizen);
@@ -22,39 +22,82 @@ namespace Problem1.SearchStrategy
                 };
             }
 
+            if (father.IsValid)
+            {
+                return new Status<IReadOnlyList<ICitizen>>
+                {
+                    IsValid = true,
+                    Data = father.Data
+                };
+            }
+
             return new Status<IReadOnlyList<ICitizen>>
             {
                 IsValid = true,
-                Data = new ReadOnlyCollection<ICitizen>(new[]
-                {
-                    father.Data.First(),
-                    mother.Data.First()
-                })
+                Data = mother.Data
             };
         }
     }
 
-    public class SearchFather : SearchParent
+    public class SearchFather : BaseSearchRelationship
     {
+        protected override Status<bool> IsValid(ICitizen citizen)
+        {
+            var status = base.IsValid(citizen).IsValid && citizen.Father != null;
+            return new Status<bool>
+            {
+                IsValid = status,
+                Message = status ? string.Empty : "There is no father"
+            };
+        }
+
         public override Status<IReadOnlyList<ICitizen>> Find(ICitizen citizen)
         {
+            var status = IsValid(citizen);
+            if (status.IsValid == false)
+            {
+                return new Status<IReadOnlyList<ICitizen>>
+                {
+                    IsValid = false,
+                    Message = status.Message
+                };
+            }
+
             return new Status<IReadOnlyList<ICitizen>>
             {
-                IsValid = citizen.Father != null,
-                Message = citizen.Father == null ? "There is no father" : string.Empty,
+                IsValid = true,
                 Data = new ReadOnlyCollection<ICitizen>(new[] { citizen.Father })
             };
         }
     }
 
-    public class SearchMother : SearchParent
+    public class SearchMother : BaseSearchRelationship
     {
+        protected override Status<bool> IsValid(ICitizen citizen)
+        {
+            var status = base.IsValid(citizen).IsValid && citizen.Mother != null;
+            return new Status<bool>
+            {
+                IsValid = status,
+                Message = status ? string.Empty : "There is no mother"
+            };
+        }
+
         public override Status<IReadOnlyList<ICitizen>> Find(ICitizen citizen)
         {
+            var status = IsValid(citizen);
+            if (status.IsValid == false)
+            {
+                return new Status<IReadOnlyList<ICitizen>>
+                {
+                    IsValid = false,
+                    Message = status.Message
+                };
+            }
+
             return new Status<IReadOnlyList<ICitizen>>
             {
-                IsValid = citizen.Mother != null,
-                Message = citizen.Mother == null ? "There is no mother" : string.Empty,
+                IsValid = true,
                 Data = new ReadOnlyCollection<ICitizen>(new[] { citizen.Mother })
             };
         }

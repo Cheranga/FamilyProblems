@@ -45,11 +45,16 @@
   <ItemGroup>
     <Compile Include="Exceptions\DoNotCheatException.cs" />
     <Compile Include="Interfaces\ICitizen.cs" />
-    <Compile Include="Interfaces\ISearch.cs" />
+    <Compile Include="Interfaces\IUniqueSearch.cs" />
     <Compile Include="Interfaces\ISearchRelationships.cs" />
+    <Compile Include="Interfaces\ISearchFactory.cs" />
     <Compile Include="Registrar.cs" />
     <Compile Include="Relationship.cs" />
+    <Compile Include="SearchFactory.cs" />
+    <Compile Include="SearchStrategy\BaseSearchRelationship.cs" />
     <Compile Include="SearchStrategy\SearchBrotherInLaws.cs" />
+    <Compile Include="SearchStrategy\SearchGrandDaughters.cs" />
+    <Compile Include="SearchStrategy\SearchGrandSons.cs" />
     <Compile Include="SearchStrategy\SearchMaternalAunts.cs" />
     <Compile Include="SearchStrategy\SearchMaternalUncles.cs" />
     <Compile Include="SearchStrategy\SearchByName.cs" />

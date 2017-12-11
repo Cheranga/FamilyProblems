@@ -6,10 +6,30 @@ using Problem1.Models;
 
 namespace Problem1.SearchStrategy
 {
-    public class SearchSibling : ISearchRelationships
+    public class SearchSibling : BaseSearchRelationship
     {
-        public virtual Status<IReadOnlyList<ICitizen>> Find(ICitizen citizen)
+        protected override Status<bool> IsValid(ICitizen citizen)
         {
+            var status = base.IsValid(citizen).IsValid && citizen.Father != null;
+            return new Status<bool>
+            {
+                IsValid = status,
+                Message = status ? string.Empty : "There are no siblings"
+            };
+        }
+
+        public override Status<IReadOnlyList<ICitizen>> Find(ICitizen citizen)
+        {
+            var status = IsValid(citizen);
+            if (status.IsValid == false)
+            {
+                return new Status<IReadOnlyList<ICitizen>>
+                {
+                    IsValid = false,
+                    Message = status.Message
+                };
+            }
+
             var siblings = citizen.Father.Children.Where(x => x != citizen).ToList();
 
             if (siblings.Any())
@@ -24,7 +44,7 @@ namespace Problem1.SearchStrategy
             return new Status<IReadOnlyList<ICitizen>>
             {
                 IsValid = false,
-                Message = $"[{citizen.Name}] is the only child"
+                Message = "There are no siblings"
             };
         }
     }

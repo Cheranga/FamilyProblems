@@ -7,18 +7,24 @@ using Problem1.Models;
 
 namespace Problem1.SearchStrategy
 {
-    public class SearchPaternalUncles : ISearchRelationships
+    public class SearchPaternalUncles : BaseSearchRelationship
     {
-        public virtual Status<IReadOnlyList<ICitizen>> Find(ICitizen citizen)
-        {   
-            var siblings = new SearchSibling().Find(citizen.Father);
-            if (siblings.IsValid == false)
+        public override Status<IReadOnlyList<ICitizen>> Find(ICitizen citizen)
+        {
+            var status = IsValid(citizen);
+            if (status.IsValid == false)
             {
                 return new Status<IReadOnlyList<ICitizen>>
                 {
                     IsValid = false,
-                    Message = siblings.Message
+                    Message = status.Message
                 };
+            }
+
+            var siblings = new SearchSibling().Find(citizen.Father);
+            if (siblings.IsValid == false)
+            {
+               return siblings;
             }
 
             var uncles = new List<ICitizen>();

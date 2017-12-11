@@ -1,65 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using Problem1.Interfaces;
 using Problem1.Models;
 
 namespace Problem1
 {
-    public interface IRegistrar
+    public class Registrar
     {
-        //Status AddChild(ICitizen parent, ICitizen child);
-        //Status AddPartner(ICitizen citizen, ICitizen partner);
-
-        //Status<IEnumerable<string>> FindPeople(string name, string relationship);
-    }
-
-    public class SearchFactory
-    {
-        private readonly IDictionary<string, ISearchRelationships> _searchStrategies;
-
-        public SearchFactory(IDictionary<string, ISearchRelationships> searchStrategies)
-        {
-            _searchStrategies = searchStrategies;
-        }
-
-        public Status<ISearchRelationships> GetSearch(string searchCriteria)
-        {
-            if (_searchStrategies.ContainsKey(searchCriteria))
-            {
-                return new Status<ISearchRelationships>
-                {
-                    IsValid = true,
-                    Data = _searchStrategies[searchCriteria]
-                };
-            }
-
-            return new Status<ISearchRelationships>
-            {
-                IsValid = false,
-                Message = $"There is no search strategy defined for [{searchCriteria}]"
-            };
-        }
-    }
-
-    public class Registrar : IRegistrar
-    {
-        private readonly ISearch<string, ICitizen> _searchByName;
-        private readonly SearchFactory _factory;
+        private readonly IUniqueSearch<string, ICitizen> _uniqueSearchByName;
+        private readonly ISearchFactory _factory;
         private List<ICitizen> _citizens;
 
-        public Registrar(ISearch<string, ICitizen> searchByName, SearchFactory factory, List<ICitizen> citizens = null)
+        public Registrar(IUniqueSearch<string, ICitizen> uniqueSearchByName, ISearchFactory factory)
         {
-            _searchByName = searchByName;
+            _uniqueSearchByName = uniqueSearchByName;
             _factory = factory;
-            if (citizens == null)
-            {
-                InitCitizens();
-            }
-            else
-            {
-                _citizens = citizens;
-            }
+            _citizens = new List<ICitizen>();
         }
 
         private void InitCitizens()
@@ -82,7 +40,7 @@ namespace Problem1
             var chika = new Citizen("Chika", Sex.Female);
             var satvy = new Citizen("Satvy", Sex.Female);
             var savya = new Citizen("Savya", Sex.Male);
-            var sayan = new Citizen("Sayan", Sex.Male);
+            var sayan = new Citizen("Saayan", Sex.Male);
 
             var jata = new Citizen("Jata", Sex.Male);
             var driya = new Citizen("Driya", Sex.Female);
@@ -131,12 +89,32 @@ namespace Problem1
 
         }
 
+        public Status AddCitizen(ICitizen citizen)
+        {
+            _citizens.Add(citizen);
+            return new Status
+            {
+                IsValid = true
+            };
+        }
+
+        public Status AddRoot(string name, Sex sex)
+        {
+            var father = new Citizen($"Father of {name}", Sex.Male) {GenerationLevel = -1};
+            AddPartner(father, new Citizen($"Mother of {name}", Sex.Female));
+
+            var citizen = new Citizen(name, sex);
+            
+            return AddCitizen(citizen);
+        }
+
         public Status AddChild(ICitizen parent, ICitizen child)
         {
             Status status = null;
             try
             {
                 parent.AddChild(child);
+                parent.Partner.AddChild(child);
                 status = new Status
                 {
                     IsValid = true
@@ -147,12 +125,68 @@ namespace Problem1
                 if (parent.Sex == Sex.Male)
                 {
                     child.Father = parent;
+                    child.Mother = parent.Partner;
                 }
                 else
                 {
                     child.Mother = parent;
+                    child.Father = parent.Partner;
                 }
 
+            }
+            catch (Exception exception)
+            {
+                status = new Status
+                {
+                    IsValid = false,
+                    Message = exception.Message
+                };
+            }
+
+            return status;
+        }
+
+        public Status AddChild(string parentName, ICitizen child)
+        {
+            Status status = null;
+            try
+            {
+                var findParent = _uniqueSearchByName.FindAll(_citizens, parentName);
+                if (findParent.IsValid == false)
+                {
+                    return new Status
+                    {
+                        IsValid = false,
+                        Message = $"[{parentName}] does not exist"
+                    };
+                }
+
+                var parent = findParent.Data;
+
+                parent.AddChild(child);
+
+                if (parent.Partner != null)
+                {
+                    parent.Partner.AddChild(child);
+                }
+
+                if (parent.Sex == Sex.Male)
+                {
+                    child.Father = parent;
+                    child.Mother = parent.Partner;
+                }
+                else
+                {
+                    child.Mother = parent;
+                    child.Father = parent.Partner;
+                }
+
+                _citizens.Add(child);
+
+                status = new Status
+                {
+                    IsValid = true
+                };
             }
             catch (Exception exception)
             {
@@ -172,6 +206,7 @@ namespace Problem1
             try
             {
                 citizen.AddPartner(partner);
+                partner.AddPartner(citizen);
                 status = new Status
                 {
                     IsValid = true
@@ -191,29 +226,36 @@ namespace Problem1
             return status;
         }
 
-        public Status<IEnumerable<string>> FindPeople(string name, string searchCriteria)
+        private Status<IReadOnlyList<ICitizen>> FindPeople(string name, string searchCriteria)
         {
             var strategy = _factory.GetSearch(searchCriteria);
             if (strategy.IsValid == false)
             {
-                return new Status<IEnumerable<string>>
+                return new Status<IReadOnlyList<ICitizen>>
                 {
                     IsValid = false,
                     Message = strategy.Message
                 };
             }
 
-            var status = _searchByName.FindAll(_citizens, name);
-            if (status.IsValid == false)
+            var person = _uniqueSearchByName.FindAll(_citizens, name);
+            if (person.IsValid == false)
             {
-                return new Status<IEnumerable<string>>
+                return new Status<IReadOnlyList<ICitizen>>
                 {
                     IsValid = false,
-                    Message = status.Message
+                    Message = person.Message
                 };
             }
 
-            var searchResults = strategy.Data.Find(status.Data);
+            var searchResults = strategy.Data.Find(person.Data);
+
+            return searchResults;
+        }
+
+        public Status<IEnumerable<string>> Find(string name, string searchCriteria)
+        {
+            var searchResults = FindPeople(name, searchCriteria);
 
             if (searchResults.IsValid)
             {
@@ -229,6 +271,36 @@ namespace Problem1
             {
                 IsValid = false,
                 Message = searchResults.Message
+            };
+        }
+
+        public Status<IEnumerable<string>> TheGirlChild(string grandParent)
+        {
+            var findPeopleStatus = FindPeople(grandParent, "thegirlchild");
+            if (findPeopleStatus.IsValid == false)
+            {
+                return new Status<IEnumerable<string>>
+                {
+                    IsValid = false,
+                    Message = findPeopleStatus.Message
+                };
+            }
+
+            var dictionary = findPeopleStatus.Data.GroupBy(x => x.Name)
+                .Select(x => new
+                {
+                    Name = x.Key,
+                    Count = x.Count()
+                })
+                .GroupBy(x => x.Count)
+                .ToDictionary(x => x.Key, x => x.ToList());
+
+            var moms = dictionary[dictionary.Keys.Max()].Select(x=>x.Name);
+
+            return new Status<IEnumerable<string>>
+            {
+                IsValid = true,
+                Data = moms
             };
         }
     }

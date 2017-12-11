@@ -6,11 +6,10 @@ using Problem1.Models;
 
 namespace Problem1.SearchStrategy
 {
-    public class SearchByName : ISearch<string, ICitizen>
+    public class SearchByName : IUniqueSearch<string, ICitizen>
     {
         public Status<ICitizen> FindAll(IEnumerable<ICitizen> citizens, string search)
         {
-
             if (string.IsNullOrEmpty(search))
             {
                 return new Status<ICitizen>

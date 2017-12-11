@@ -17,6 +17,9 @@ namespace Problem1.SearchStrategy
             };
         }
 
+        
+
+
         public abstract Status<IReadOnlyList<ICitizen>> Find(ICitizen citizen);
     }
 }

@@ -6,10 +6,20 @@ using Problem1.Models;
 
 namespace Problem1.SearchStrategy
 {
-    public class SearchMaternalAunts : ISearchRelationships
+    public class SearchMaternalAunts : BaseSearchRelationship
     {
-        public virtual Status<IReadOnlyList<ICitizen>> Find(ICitizen citizen)
+        public override Status<IReadOnlyList<ICitizen>> Find(ICitizen citizen)
         {
+            var status = IsValid(citizen);
+            if (status.IsValid == false)
+            {
+                return new Status<IReadOnlyList<ICitizen>>
+                {
+                    IsValid = false,
+                    Message = status.Message
+                };
+            }
+
             var siblings = new SearchSibling().Find(citizen.Mother);
             if (siblings.IsValid == false)
             {
