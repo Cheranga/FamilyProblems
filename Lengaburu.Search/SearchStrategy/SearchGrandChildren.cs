@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -8,13 +9,18 @@ namespace Lengaburu.Core.Search.SearchStrategy
 {
     public class SearchGrandChildren : BaseSearchRelationship
     {
+        protected override string NotFoundMessage
+        {
+            get { return "There are no grand children"; }
+        }
+
         protected override Status<bool> IsValid(ICitizen citizen)
         {
             var status = base.IsValid(citizen).IsValid && (citizen.Children != null && citizen.Children.Any());
             return new Status<bool>
             {
                 IsValid = status,
-                Message = status ? string.Empty : "There are no grandchildren"
+                Message = string.IsNullOrEmpty(NotFoundMessage) ? "There are no grand children" : NotFoundMessage
             };
         }
 
@@ -31,30 +37,22 @@ namespace Lengaburu.Core.Search.SearchStrategy
             }
 
             var children = citizen.Children;
-            if (children == null || children.Any() == false)
+
+            var grandChildren = children.SelectMany(x => x.Children ?? new List<ICitizen>()).ToList();
+            if (grandChildren.Any() == false)
             {
                 return new Status<IReadOnlyList<ICitizen>>
                 {
                     IsValid = false,
-                    Message = "There are no grandchildren"
+                    Message = string.IsNullOrEmpty(NotFoundMessage) ? "There are no grand children" : NotFoundMessage
                 };
             }
 
-            var grandChildren = children.SelectMany(x => x.Children ?? new List<ICitizen>()).ToList();
-            if (grandChildren.Any())
+            return GetFilteredResults(new Status<IReadOnlyList<ICitizen>>
             {
-                return new Status<IReadOnlyList<ICitizen>>
-                {
-                    IsValid = true,
-                    Data = new ReadOnlyCollection<ICitizen>(grandChildren)
-                };
-            }
-
-            return new Status<IReadOnlyList<ICitizen>>
-            {
-                IsValid = false,
-                Message = "There are no grandchildren"
-            };
+                IsValid = true,
+                Data = new ReadOnlyCollection<ICitizen>(grandChildren)
+            });
         }
     }
 }

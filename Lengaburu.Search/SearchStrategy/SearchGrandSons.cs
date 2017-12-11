@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -8,29 +9,17 @@ namespace Lengaburu.Core.Search.SearchStrategy
 {
     public class SearchGrandSons : SearchGrandChildren
     {
-        public override Status<IReadOnlyList<ICitizen>> Find(ICitizen citizen)
+        protected override string NotFoundMessage
         {
-            var status = base.Find(citizen);
-            if (status.IsValid == false)
+            get
             {
-                return status;
+                return "There are no grand sons";
             }
+        }
 
-            var grandSons = status.Data.Where(x => x.Sex == Sex.Male).ToList();
-            if (grandSons.Any())
-            {
-                return new Status<IReadOnlyList<ICitizen>>
-                {
-                    IsValid = true,
-                    Data = new ReadOnlyCollection<ICitizen>(grandSons)
-                };
-            }
-
-            return new Status<IReadOnlyList<ICitizen>>
-            {
-                IsValid = false,
-                Message = "There are no grand sons"
-            };
+        protected override Func<ICitizen, bool> Filter
+        {
+            get { return x => x.Sex == Sex.Male; }
         }
     }
 }

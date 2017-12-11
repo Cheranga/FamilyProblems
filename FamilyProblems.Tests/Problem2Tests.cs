@@ -20,7 +20,7 @@ namespace Lengaburu.Tests
             //
             Assert.IsTrue(addChildStatus.IsValid);
             Assert.IsTrue(grandChildrenStatus.IsValid);
-            Assert.IsTrue(new[] { "vanya"}.All(x => grandChildrenStatus.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"vanya"}.All(x => grandChildrenStatus.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]

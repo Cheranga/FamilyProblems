@@ -22,7 +22,7 @@ namespace Lengaburu.Core.Search.SearchStrategy
 
             var cousins = new List<ICitizen>();
 
-            var fathersSiblings = new SearchSibling().Find(citizen.Father);
+            var fathersSiblings = new SearchSiblings().Find(citizen.Father);
             if (fathersSiblings.IsValid)
             {
                 var searchChildren = new SearchChildren();
@@ -36,7 +36,7 @@ namespace Lengaburu.Core.Search.SearchStrategy
                 });
             }
 
-            var mothersSiblings = new SearchSibling().Find(citizen.Mother);
+            var mothersSiblings = new SearchSiblings().Find(citizen.Mother);
             if (mothersSiblings.IsValid)
             {
                 var searchChildren = new SearchChildren();

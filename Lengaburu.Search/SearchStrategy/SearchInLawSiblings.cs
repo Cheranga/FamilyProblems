@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using Lengaburu.Core.Interfaces;
 using Lengaburu.Core.Models;
 
@@ -6,6 +9,11 @@ namespace Lengaburu.Core.Search.SearchStrategy
 {
     public class SearchInLawSiblings : BaseSearchRelationship
     {
+        protected override string NotFoundMessage
+        {
+            get { return "There are no in laws"; }
+        }
+
         protected override Status<bool> IsValid(ICitizen citizen)
         {
             var status = base.IsValid(citizen).IsValid && (citizen.Partner != null);
@@ -28,17 +36,22 @@ namespace Lengaburu.Core.Search.SearchStrategy
                 };
             }
 
-            var partnersSiblings = new SearchSibling().Find(citizen.Partner);
-            if (partnersSiblings.IsValid)
+            var partnersSiblings = new SearchSiblings().Find(citizen.Partner);
+            if (partnersSiblings.IsValid == false)
             {
-               return partnersSiblings;
+                return new Status<IReadOnlyList<ICitizen>>
+                {
+                    IsValid = false,
+                    Message = string.IsNullOrEmpty(NotFoundMessage)? "There are no in laws" : NotFoundMessage
+                };
             }
 
-            return new Status<IReadOnlyList<ICitizen>>
+            return GetFilteredResults(new Status<IReadOnlyList<ICitizen>>
             {
-                IsValid = false,
-                Message = "There are no in laws"
-            };
+                IsValid = true,
+                Data = partnersSiblings.Data
+            });
+
         }
     }
 }

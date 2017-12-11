@@ -20,7 +20,7 @@ namespace Lengaburu.Core.Search.SearchStrategy
                 };
             }
 
-            var siblings = new SearchSibling().Find(citizen.Father);
+            var siblings = new SearchSiblings().Find(citizen.Father);
             if (siblings.IsValid == false)
             {
                 return new Status<IReadOnlyList<ICitizen>>

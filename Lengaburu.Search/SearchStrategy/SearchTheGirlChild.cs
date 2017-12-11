@@ -4,42 +4,14 @@ using System.Linq;
 using Lengaburu.Core.Interfaces;
 using Lengaburu.Core.Models;
 
-namespace Lengaburu.Core.SearchStrategy
+namespace Lengaburu.Core.Search.SearchStrategy
 {
-    public class SearchGrandDaughters : SearchGrandChildren
-    {
-        public override Status<IReadOnlyList<ICitizen>> Find(ICitizen citizen)
-        {
-            var status = base.Find(citizen);
-            if (status.IsValid == false)
-            {
-                return status;
-            }
-
-            var grandDaughters = status.Data.Where(x => x.Sex == Sex.Female).ToList();
-            if (grandDaughters.Any())
-            {
-                return new Status<IReadOnlyList<ICitizen>>
-                {
-                    IsValid = true,
-                    Data = new ReadOnlyCollection<ICitizen>(grandDaughters)
-                };
-            }
-
-            return new Status<IReadOnlyList<ICitizen>>
-            {
-                IsValid = false,
-                Message = "There are no grand daughters"
-            };
-        }
-    }
-
-    public class TheGirlChild : BaseSearchRelationship
+    public class SearchTheGirlChild : BaseSearchRelationship
     {
         private readonly SearchGrandChildren _searchGrandChildren;
         private readonly SearchDaughters _searchDaughters;
 
-        public TheGirlChild(SearchGrandChildren searchGrandChildren, SearchDaughters searchDaughters)
+        public SearchTheGirlChild(SearchGrandChildren searchGrandChildren, SearchDaughters searchDaughters)
         {
             _searchGrandChildren = searchGrandChildren;
             _searchDaughters = searchDaughters;

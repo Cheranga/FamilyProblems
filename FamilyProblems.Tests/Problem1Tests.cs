@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Lengaburu.Business;
-using Lengaburu.Core;
 using Lengaburu.Core.Interfaces;
 using Lengaburu.Core.Models;
 using Lengaburu.Core.Search.Factories;
@@ -24,22 +23,22 @@ namespace Lengaburu.Tests
             var searchStrategies = new Dictionary<string, ISearchRelationships>
             {
                 {"paternaluncles", new SearchPaternalUncles()},
-                { "maternaluncles", new SearchMaternalUncles()},
-                { "paternalaunts", new SearchPaternalAunts()},
-                { "maternalaunts", new SearchMaternalAunts()},
-                { "sisterinlaws", new SearchSisterInLaws()},
-                { "brotherinlaws", new SearchBrotherInLaws()},
-                { "cousins", new SearchCousins()},
-                { "father", new SearchFather()},
-                { "mother", new SearchMother()},
-                { "children", new SearchChildren()},
-                { "sons", new SearchSons()},
-                { "daughters", new SearchDaughters()},
-                { "brothers", new SearchBrothers()},
-                { "sisters", new SearchSisters()},
-                { "granddaughters", new SearchGrandDaughters()},
-                { "grandchildren", new SearchGrandChildren()},
-                { "thegirlchild", new TheGirlChild(new SearchGrandChildren(), new SearchDaughters())}
+                {"maternaluncles", new SearchMaternalUncles()},
+                {"paternalaunts", new SearchPaternalAunts()},
+                {"maternalaunts", new SearchMaternalAunts()},
+                {"sisterinlaws", new SearchSisterInLaws()},
+                {"brotherinlaws", new SearchBrotherInLaws()},
+                {"cousins", new SearchCousins()},
+                {"father", new SearchFather()},
+                {"mother", new SearchMother()},
+                {"children", new SearchChildren()},
+                {"sons", new SearchSons()},
+                {"daughters", new SearchDaughters()},
+                {"brothers", new SearchBrothers()},
+                {"sisters", new SearchSisters()},
+                {"granddaughters", new SearchGrandDaughters()},
+                {"grandchildren", new SearchGrandChildren()},
+                {"thegirlchild", new SearchTheGirlChild(new SearchGrandChildren(), new SearchDaughters())}
             };
 
             var searchFactory = new SearchFactory(searchStrategies);
@@ -159,7 +158,7 @@ namespace Lengaburu.Tests
             var status = _registrar.Find("drita", "paternaluncles");
 
             Assert.IsTrue(status.IsValid);
-            Assert.IsTrue(new[] { "ish", "vich", "vyan" }.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"ish", "vich", "vyan"}.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]
@@ -186,7 +185,7 @@ namespace Lengaburu.Tests
             var status = _registrar.Find("satvy", "maternaluncles");
 
             Assert.IsTrue(status.IsValid);
-            Assert.IsTrue(new[] { "ish", "vich", "chit" }.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"ish", "vich", "chit"}.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]
@@ -213,7 +212,7 @@ namespace Lengaburu.Tests
             var status = _registrar.Find("drita", "paternalaunts");
 
             Assert.IsTrue(status.IsValid);
-            Assert.IsTrue(new[] { "lika", "satya" }.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"lika", "satya"}.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]
@@ -240,7 +239,7 @@ namespace Lengaburu.Tests
             var status = _registrar.Find("drita", "paternalaunts");
 
             Assert.IsTrue(status.IsValid);
-            Assert.IsTrue(new[] { "lika", "satya" }.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"lika", "satya"}.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]
@@ -267,7 +266,7 @@ namespace Lengaburu.Tests
             var status = _registrar.Find("jnki", "sisterinlaws");
 
             Assert.IsTrue(status.IsValid);
-            Assert.IsTrue(new[] { "chika" }.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"chika"}.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]
@@ -294,7 +293,7 @@ namespace Lengaburu.Tests
             var status = _registrar.Find("vyan", "brotherinlaws");
 
             Assert.IsTrue(status.IsValid);
-            Assert.IsTrue(new[] { "vich", "chit", "ish" }.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"vich", "chit", "ish"}.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]
@@ -321,7 +320,7 @@ namespace Lengaburu.Tests
             var status = _registrar.Find("vila", "cousins");
 
             Assert.IsTrue(status.IsValid);
-            Assert.IsTrue(new[] { "drita", "vrita", "satvy", "savya", "saayan" }.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"drita", "vrita", "satvy", "savya", "saayan"}.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]
@@ -348,7 +347,7 @@ namespace Lengaburu.Tests
             var status = _registrar.Find("vich", "father");
 
             Assert.IsTrue(status.IsValid);
-            Assert.IsTrue(new[] { "king shan" }.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"king shan"}.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]
@@ -375,7 +374,7 @@ namespace Lengaburu.Tests
             var status = _registrar.Find("savya", "mother");
 
             Assert.IsTrue(status.IsValid);
-            Assert.IsTrue(new[] { "satya" }.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"satya"}.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]
@@ -402,7 +401,7 @@ namespace Lengaburu.Tests
             var status = _registrar.Find("lika", "children");
 
             Assert.IsTrue(status.IsValid);
-            Assert.IsTrue(new[] { "vila", "chika" }.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"vila", "chika"}.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]
@@ -429,7 +428,7 @@ namespace Lengaburu.Tests
             var status = _registrar.Find("saayan", "sons");
 
             Assert.IsTrue(status.IsValid);
-            Assert.IsTrue(new[] { "misa" }.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"misa"}.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]
@@ -456,7 +455,7 @@ namespace Lengaburu.Tests
             var status = _registrar.Find("jaya", "daughters");
 
             Assert.IsTrue(status.IsValid);
-            Assert.IsTrue(new[] { "driya" }.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"driya"}.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]
@@ -483,7 +482,7 @@ namespace Lengaburu.Tests
             var status = _registrar.Find("satvy", "brothers");
 
             Assert.IsTrue(status.IsValid);
-            Assert.IsTrue(new[] { "savya", "saayan" }.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"savya", "saayan"}.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]
@@ -510,7 +509,7 @@ namespace Lengaburu.Tests
             var status = _registrar.Find("vich", "sisters");
 
             Assert.IsTrue(status.IsValid);
-            Assert.IsTrue(new[] { "satya" }.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"satya"}.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]
@@ -537,7 +536,7 @@ namespace Lengaburu.Tests
             var status = _registrar.Find("lika", "granddaughters");
 
             Assert.IsTrue(status.IsValid);
-            Assert.IsTrue(new[] { "lavnya" }.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"lavnya"}.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]
@@ -552,6 +551,5 @@ namespace Lengaburu.Tests
         }
 
         #endregion
-
     }
 }

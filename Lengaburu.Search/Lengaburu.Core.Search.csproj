@@ -46,20 +46,26 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SearchStrategy\BaseSearchRelationship.cs" />
     <Compile Include="SearchStrategy\SearchBrotherInLaws.cs" />
-    <Compile Include="SearchStrategy\SearchByName.cs" />
+    <Compile Include="SearchStrategy\SearchBrothers.cs" />
     <Compile Include="SearchStrategy\SearchChildren.cs" />
     <Compile Include="SearchStrategy\SearchCousins.cs" />
+    <Compile Include="SearchStrategy\SearchDaughters.cs" />
+    <Compile Include="SearchStrategy\SearchFather.cs" />
     <Compile Include="SearchStrategy\SearchGrandChildren.cs" />
     <Compile Include="SearchStrategy\SearchGrandDaughters.cs" />
     <Compile Include="SearchStrategy\SearchGrandSons.cs" />
     <Compile Include="SearchStrategy\SearchInLawSiblings.cs" />
     <Compile Include="SearchStrategy\SearchMaternalAunts.cs" />
     <Compile Include="SearchStrategy\SearchMaternalUncles.cs" />
-    <Compile Include="SearchStrategy\SearchParent.cs" />
+    <Compile Include="SearchStrategy\SearchMother.cs" />
+    <Compile Include="SearchStrategy\SearchParents.cs" />
     <Compile Include="SearchStrategy\SearchPaternalAunts.cs" />
     <Compile Include="SearchStrategy\SearchPaternalUncles.cs" />
-    <Compile Include="SearchStrategy\SearchSibling.cs" />
+    <Compile Include="SearchStrategy\SearchSiblings.cs" />
     <Compile Include="SearchStrategy\SearchSisterInLaws.cs" />
+    <Compile Include="SearchStrategy\SearchSisters.cs" />
+    <Compile Include="SearchStrategy\SearchSons.cs" />
+    <Compile Include="SearchStrategy\SearchTheGirlChild.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Problem1\Lengaburu.Core.csproj">
