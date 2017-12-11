@@ -19,6 +19,15 @@ namespace Lengaburu.Tests
         [TestInitialize]
         public void Init()
         {
+            //
+            // The strategies are defined as strings because in runtime or via configuration we can change, the algorithm name.
+            // If we used an enum, whenever we want to add/change a strategy we would need to modify the enum
+            //
+            // NOTE:
+            // Some of this classes requires constructor dependencies, and the solution have been designed considering that DI will
+            // be implemented in future [Furthermore some of these searches can be abstracted out for it's own interfaces] so it might be
+            // easy to do DI, otherwise we need to do context specific DI
+            //
             var uniqueSearch = new IdentifierByName();
             var searchStrategies = new Dictionary<string, ISearchRelationships>
             {
@@ -28,7 +37,7 @@ namespace Lengaburu.Tests
                 {"maternalaunts", new SearchMaternalAunts()},
                 {"sisterinlaws", new SearchSisterInLaws()},
                 {"brotherinlaws", new SearchBrotherInLaws()},
-                {"cousins", new SearchCousins()},
+                {"cousins", new SearchCousins(new SearchSiblings(), new SearchChildren())},
                 {"father", new SearchFather()},
                 {"mother", new SearchMother()},
                 {"children", new SearchChildren()},

@@ -8,6 +8,15 @@ namespace Lengaburu.Core.Search.SearchStrategy
 {
     public class SearchCousins : BaseSearchRelationship
     {
+        private readonly SearchSiblings _searchSiblings;
+        private readonly SearchChildren _searchChildren;
+
+        public SearchCousins(SearchSiblings searchSiblings, SearchChildren searchChildren)
+        {
+            _searchSiblings = searchSiblings;
+            _searchChildren = searchChildren;
+        }
+
         public override Status<IReadOnlyList<ICitizen>> Find(ICitizen citizen)
         {
             var status = IsValid(citizen);
@@ -22,13 +31,12 @@ namespace Lengaburu.Core.Search.SearchStrategy
 
             var cousins = new List<ICitizen>();
 
-            var fathersSiblings = new SearchSiblings().Find(citizen.Father);
+            var fathersSiblings = _searchSiblings.Find(citizen.Father);
             if (fathersSiblings.IsValid)
-            {
-                var searchChildren = new SearchChildren();
+            {   
                 fathersSiblings.Data.ToList().ForEach(x =>
                 {
-                    var children = searchChildren.Find(x);
+                    var children = _searchChildren.Find(x);
                     if (children.IsValid)
                     {
                         cousins.AddRange(children.Data);

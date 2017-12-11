@@ -54,7 +54,7 @@
     <Compile Include="Models\Citizen.cs" />
     <Compile Include="Models\Sex.cs" />
     <Compile Include="Models\Status.cs" />
-    <Compile Include="Exceptions\PersonDoesNotExist.cs" />
+    <Compile Include="Exceptions\CitizenDoesNotExist.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

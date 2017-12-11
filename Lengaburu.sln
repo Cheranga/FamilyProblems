@@ -8,6 +8,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lengaburu.Tests", "FamilyProblems.Tests\Lengaburu.Tests.csproj", "{49213EC7-BD40-4A9A-AAF7-0573E209EE9A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CC4538BC-CBD9-4327-B882-775E3B36E2D5}"
+	ProjectSection(SolutionItems) = preProject
+		Readme.md = Readme.md
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lengaburu.Core.Search", "Lengaburu.Search\Lengaburu.Core.Search.csproj", "{6E6F8DAD-80BC-478F-878D-8304AB6DF5F4}"
 EndProject

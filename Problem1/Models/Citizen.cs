@@ -43,7 +43,7 @@ namespace Lengaburu.Core.Models
         {
             if (string.IsNullOrEmpty(name))
             {
-                throw new PersonDoesNotExist();
+                throw new CitizenDoesNotExist();
             }
 
             return AddPartner(new Citizen(name, sex));
@@ -66,7 +66,7 @@ namespace Lengaburu.Core.Models
         {
             if (string.IsNullOrEmpty(name))
             {
-                throw new PersonDoesNotExist();
+                throw new CitizenDoesNotExist();
             }
 
             var child = new Citizen(name, sex);
@@ -77,7 +77,7 @@ namespace Lengaburu.Core.Models
         {
             if (child == null)
             {
-                throw new PersonDoesNotExist();
+                throw new CitizenDoesNotExist();
             }
 
             child.GenerationLevel = GenerationLevel + 1;
