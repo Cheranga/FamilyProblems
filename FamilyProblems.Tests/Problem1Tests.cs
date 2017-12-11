@@ -16,6 +16,8 @@ namespace Lengaburu.Tests
     {
         private Registrar _registrar;
 
+        #region Initialization
+
         [TestInitialize]
         public void Init()
         {
@@ -28,6 +30,15 @@ namespace Lengaburu.Tests
             // be implemented in future [Furthermore some of these searches can be abstracted out for it's own interfaces] so it might be
             // easy to do DI, otherwise we need to do context specific DI
             //
+            InitRegistrar();
+            //
+            // Setup the initial data
+            //
+            InitData();
+        }
+
+        private void InitRegistrar()
+        {
             var uniqueSearch = new IdentifierByName();
             var searchStrategies = new Dictionary<string, ISearchRelationships>
             {
@@ -53,9 +64,10 @@ namespace Lengaburu.Tests
             var searchFactory = new SearchFactory(searchStrategies);
 
             _registrar = new Registrar(uniqueSearch, searchFactory);
-            //
-            // Setup the initial data
-            //
+        }
+
+        private void InitData()
+        {
             var kingShan = new Citizen("King Shan", Sex.Male);
             _registrar.AddCitizen(kingShan);
 
@@ -79,26 +91,15 @@ namespace Lengaburu.Tests
             var lavnya = new Citizen("Lavnya", Sex.Female);
             var kriya = new Citizen("Kriya", Sex.Male);
             var misa = new Citizen("Misa", Sex.Male);
-
-
-            _registrar.AddPartner(chit, new Citizen("Ambi", Sex.Female));
-            _registrar.AddPartner(vich, new Citizen("Lika", Sex.Female));
-            _registrar.AddPartner(satya, new Citizen("Vyan", Sex.Male));
-
-            _registrar.AddPartner(drita, new Citizen("Jaya", Sex.Female));
-            _registrar.AddPartner(vila, new Citizen("Jnki", Sex.Female));
-            _registrar.AddPartner(chika, new Citizen("Kpila", Sex.Male));
-            _registrar.AddPartner(satvy, new Citizen("Asva", Sex.Male));
-            _registrar.AddPartner(savya, new Citizen("Krpi", Sex.Female));
-            _registrar.AddPartner(sayan, new Citizen("Mina", Sex.Female));
-
-            _registrar.AddPartner(driya, new Citizen("Minu", Sex.Male));
-            _registrar.AddPartner(lavnya, new Citizen("Gru", Sex.Male));
-
+            
             _registrar.AddChild(kingShan, ish);
             _registrar.AddChild(kingShan, chit);
             _registrar.AddChild(kingShan, vich);
             _registrar.AddChild(kingShan, satya);
+
+            _registrar.AddPartner(chit, new Citizen("Ambi", Sex.Female));
+            _registrar.AddPartner(vich, new Citizen("Lika", Sex.Female));
+            _registrar.AddPartner(satya, new Citizen("Vyan", Sex.Male));
 
             _registrar.AddChild(chit, drita);
             _registrar.AddChild(chit, vrita);
@@ -110,6 +111,13 @@ namespace Lengaburu.Tests
             _registrar.AddChild(satya, savya);
             _registrar.AddChild(satya, sayan);
 
+            _registrar.AddPartner(drita, new Citizen("Jaya", Sex.Female));
+            _registrar.AddPartner(vila, new Citizen("Jnki", Sex.Female));
+            _registrar.AddPartner(chika, new Citizen("Kpila", Sex.Male));
+            _registrar.AddPartner(satvy, new Citizen("Asva", Sex.Male));
+            _registrar.AddPartner(savya, new Citizen("Krpi", Sex.Female));
+            _registrar.AddPartner(sayan, new Citizen("Mina", Sex.Female));
+
             _registrar.AddChild(drita, jata);
             _registrar.AddChild(drita, driya);
 
@@ -118,7 +126,13 @@ namespace Lengaburu.Tests
             _registrar.AddChild(savya, kriya);
 
             _registrar.AddChild(sayan, misa);
+
+            _registrar.AddPartner(driya, new Citizen("Minu", Sex.Male));
+
+            _registrar.AddPartner(lavnya, new Citizen("Gru", Sex.Male));
         }
+
+        #endregion
 
         //private ICitizen _root;
 
