@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
+using Lengaburu.Core.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Problem1.Models;
 
-namespace FamilyProblems.Tests
-{   
+namespace Lengaburu.Tests
+{
     public partial class RegistrarTests
     {
         [TestMethod]
@@ -18,7 +18,7 @@ namespace FamilyProblems.Tests
             // Assert
             //
             Assert.IsTrue(girlChildStatus.IsValid);
-            Assert.IsTrue(new[] { "jaya", "jnki", "satya", "lika"}.All(x => girlChildStatus.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"jaya", "jnki", "satya", "lika"}.All(x => girlChildStatus.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]
@@ -33,7 +33,7 @@ namespace FamilyProblems.Tests
             // Assert
             //
             Assert.IsTrue(girlChildStatus.IsValid);
-            Assert.IsTrue(new[] { "jaya"}.All(x => girlChildStatus.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"jaya"}.All(x => girlChildStatus.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]
@@ -48,7 +48,7 @@ namespace FamilyProblems.Tests
             // Assert
             //
             Assert.IsTrue(girlChildStatus.IsValid);
-            Assert.IsTrue(new[] { "jaya", "jnki", "satya", "lika" }.All(x => girlChildStatus.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"jaya", "jnki", "satya", "lika"}.All(x => girlChildStatus.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
     }
 }

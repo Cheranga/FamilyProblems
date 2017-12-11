@@ -1,50 +1,70 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using Lengaburu.Business;
+using Lengaburu.Core.Models;
+using Lengaburu.Core.Search.Factories;
+using Lengaburu.Core.Search.Identifier;
+using Lengaburu.Core.Search.SearchStrategy;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Problem1;
-using Problem1.Interfaces;
-using Problem1.Models;
-using Problem1.SearchStrategy;
 
-namespace FamilyProblems.Tests
+namespace Lengaburu.Tests
 {
     [TestClass]
     public partial class RegistrarTests
     {
         private Registrar _registrar;
 
+        #region Initialization
+
         [TestInitialize]
         public void Init()
         {
-            var uniqueSearch = new SearchByName();
-            var searchStrategies = new Dictionary<string, ISearchRelationships>
-            {
-                {"paternaluncles", new SearchPaternalUncles()},
-                { "maternaluncles", new SearchMaternalUncles()},
-                { "paternalaunts", new SearchPaternalAunts()},
-                { "maternalaunts", new SearchMaternalAunts()},
-                { "sisterinlaws", new SearchSisterInLaws()},
-                { "brotherinlaws", new SearchBrotherInLaws()},
-                { "cousins", new SearchCousins()},
-                { "father", new SearchFather()},
-                { "mother", new SearchMother()},
-                { "children", new SearchChildren()},
-                { "sons", new SearchSons()},
-                { "daughters", new SearchDaughters()},
-                { "brothers", new SearchBrothers()},
-                { "sisters", new SearchSisters()},
-                { "granddaughters", new SearchGrandDaughters()},
-                { "grandchildren", new SearchGrandChildren()},
-                { "thegirlchild", new TheGirlChild(new SearchGrandChildren(), new SearchDaughters())}
-            };
-
-            var searchFactory = new SearchFactory(searchStrategies);
-
-            _registrar = new Registrar(uniqueSearch, searchFactory);
+            //
+            // The strategies are defined as strings because in runtime or via configuration we can change, the algorithm name.
+            // If we used an enum, whenever we want to add/change a strategy we would need to modify the enum
+            //
+            // NOTE:
+            // Some of this classes requires constructor dependencies, and the solution have been designed considering that DI will
+            // be implemented in future [Furthermore some of these searches can be abstracted out for it's own interfaces] so it might be
+            // easy to do DI, otherwise we need to do context specific DI
+            //
+            InitRegistrar();
             //
             // Setup the initial data
             //
+            InitData();
+        }
+
+        private void InitRegistrar()
+        {
+            var uniqueSearch = new IdentifierByName();
+
+            var searchFactory = new SearchFactory();
+            searchFactory.RegisterSearch("paternaluncles", new SearchPaternalUncles(), -1);
+            searchFactory.RegisterSearch("maternaluncles", new SearchMaternalUncles(), -1);
+            searchFactory.RegisterSearch("paternalaunts", new SearchPaternalAunts(), -1);
+            searchFactory.RegisterSearch("maternalaunts", new SearchMaternalAunts(), -1);
+            searchFactory.RegisterSearch("sisterinlaws", new SearchSisterInLaws(), 0);
+            searchFactory.RegisterSearch("brotherinlaws", new SearchBrotherInLaws(), 0);
+            searchFactory.RegisterSearch("cousins", new SearchCousins(new SearchSiblings(), new SearchChildren()), 0);
+            searchFactory.RegisterSearch("father", new SearchFather(), -1);
+            searchFactory.RegisterSearch("mother", new SearchMother(), -1);
+            searchFactory.RegisterSearch("children", new SearchChildren(), 1);
+            searchFactory.RegisterSearch("sons", new SearchSons(), 1);
+            searchFactory.RegisterSearch("daughters", new SearchDaughters(), 1);
+            searchFactory.RegisterSearch("siblings", new SearchSiblings(), 0);
+            searchFactory.RegisterSearch("brothers", new SearchBrothers(), 0);
+            searchFactory.RegisterSearch("sisters", new SearchSisters(), 0);
+            searchFactory.RegisterSearch("grandchildren", new SearchGrandChildren(), 2);
+            searchFactory.RegisterSearch("granddaughters", new SearchGrandDaughters(), 2);
+            searchFactory.RegisterSearch("grandsons", new SearchGrandSons(), 2);
+            searchFactory.RegisterSearch("thegirlchild", new SearchTheGirlChild(new SearchGrandChildren(), new SearchDaughters()), 2);
+
+            _registrar = new Registrar(uniqueSearch, searchFactory);
+        }
+
+        private void InitData()
+        {
             var kingShan = new Citizen("King Shan", Sex.Male);
             _registrar.AddCitizen(kingShan);
 
@@ -69,25 +89,14 @@ namespace FamilyProblems.Tests
             var kriya = new Citizen("Kriya", Sex.Male);
             var misa = new Citizen("Misa", Sex.Male);
 
-
-            _registrar.AddPartner(chit, new Citizen("Ambi", Sex.Female));
-            _registrar.AddPartner(vich, new Citizen("Lika", Sex.Female));
-            _registrar.AddPartner(satya, new Citizen("Vyan", Sex.Male));
-
-            _registrar.AddPartner(drita, new Citizen("Jaya", Sex.Female));
-            _registrar.AddPartner(vila, new Citizen("Jnki", Sex.Female));
-            _registrar.AddPartner(chika, new Citizen("Kpila", Sex.Male));
-            _registrar.AddPartner(satvy, new Citizen("Asva", Sex.Male));
-            _registrar.AddPartner(savya, new Citizen("Krpi", Sex.Female));
-            _registrar.AddPartner(sayan, new Citizen("Mina", Sex.Female));
-
-            _registrar.AddPartner(driya, new Citizen("Minu", Sex.Male));
-            _registrar.AddPartner(lavnya, new Citizen("Gru", Sex.Male));
-
             _registrar.AddChild(kingShan, ish);
             _registrar.AddChild(kingShan, chit);
             _registrar.AddChild(kingShan, vich);
             _registrar.AddChild(kingShan, satya);
+
+            _registrar.AddPartner(chit, new Citizen("Ambi", Sex.Female));
+            _registrar.AddPartner(vich, new Citizen("Lika", Sex.Female));
+            _registrar.AddPartner(satya, new Citizen("Vyan", Sex.Male));
 
             _registrar.AddChild(chit, drita);
             _registrar.AddChild(chit, vrita);
@@ -99,6 +108,13 @@ namespace FamilyProblems.Tests
             _registrar.AddChild(satya, savya);
             _registrar.AddChild(satya, sayan);
 
+            _registrar.AddPartner(drita, new Citizen("Jaya", Sex.Female));
+            _registrar.AddPartner(vila, new Citizen("Jnki", Sex.Female));
+            _registrar.AddPartner(chika, new Citizen("Kpila", Sex.Male));
+            _registrar.AddPartner(satvy, new Citizen("Asva", Sex.Male));
+            _registrar.AddPartner(savya, new Citizen("Krpi", Sex.Female));
+            _registrar.AddPartner(sayan, new Citizen("Mina", Sex.Female));
+
             _registrar.AddChild(drita, jata);
             _registrar.AddChild(drita, driya);
 
@@ -107,43 +123,13 @@ namespace FamilyProblems.Tests
             _registrar.AddChild(savya, kriya);
 
             _registrar.AddChild(sayan, misa);
+
+            _registrar.AddPartner(driya, new Citizen("Minu", Sex.Male));
+
+            _registrar.AddPartner(lavnya, new Citizen("Gru", Sex.Male));
         }
 
-        //private ICitizen _root;
-
-        //[TestInitialize]
-        //public void TestInitialize()
-        //{
-        //    var shanFamily = new Citizen("King Shan", Sex.Male).AddPartner("Queen Anga", Sex.Female);
-
-        //    var chitFamily = new Citizen("Chit", Sex.Male).AddPartner("Ambi", Sex.Female);
-        //    var vichFamily = new Citizen("Vich", Sex.Male).AddPartner("Lika", Sex.Female);
-        //    var satyaFamily = new Citizen("Satya", Sex.Female).AddPartner("Vyan", Sex.Male);
-
-        //    var dritaFamily = new Citizen("Drita", Sex.Male).AddPartner("Jaya", Sex.Female);
-        //    var vilaFamily = new Citizen("Vila", Sex.Male).AddPartner("Jnki", Sex.Female);
-        //    var chikaFamily = new Citizen("Chika", Sex.Female).AddPartner("Kpila", Sex.Male);
-        //    var satvyFamily = new Citizen("Satvy", Sex.Female).AddPartner("Asva", Sex.Male);
-        //    var savyaFamily = new Citizen("Savya", Sex.Male).AddPartner("Krpi", Sex.Female);
-        //    var sayanFamily = new Citizen("Saayan", Sex.Male).AddPartner("Mina", Sex.Female);
-
-        //    var driyaFamily = new Citizen("Driya", Sex.Female).AddPartner("Mnu", Sex.Male);
-        //    var lavnyaFamily = new Citizen("Lavnya", Sex.Female).AddPartner("Gru", Sex.Male);
-
-        //    //
-        //    // Adding children
-        //    //
-        //    shanFamily.AddChild("Ish", Sex.Male).AddChild(chitFamily).AddChild(vichFamily).AddChild(satyaFamily);
-        //    chitFamily.AddChild(dritaFamily).AddChild("Vrita", Sex.Male);
-        //    vichFamily.AddChild(vilaFamily).AddChild(chikaFamily);
-        //    satyaFamily.AddChild(satvyFamily).AddChild(savyaFamily).AddChild(sayanFamily);
-        //    dritaFamily.AddChild("Jata", Sex.Male).AddChild(driyaFamily);
-        //    vilaFamily.AddChild(lavnyaFamily);
-        //    savyaFamily.AddChild("Kriya", Sex.Male);
-        //    sayanFamily.AddChild("Misa", Sex.Male);
-
-        //    _root = shanFamily;
-        //}
+        #endregion
 
         #region Paternal Uncles
 
@@ -156,7 +142,7 @@ namespace FamilyProblems.Tests
             var status = _registrar.Find("drita", "paternaluncles");
 
             Assert.IsTrue(status.IsValid);
-            Assert.IsTrue(new[] { "ish", "vich", "vyan" }.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"ish", "vich", "vyan"}.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]
@@ -183,7 +169,7 @@ namespace FamilyProblems.Tests
             var status = _registrar.Find("satvy", "maternaluncles");
 
             Assert.IsTrue(status.IsValid);
-            Assert.IsTrue(new[] { "ish", "vich", "chit" }.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"ish", "vich", "chit"}.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]
@@ -210,7 +196,7 @@ namespace FamilyProblems.Tests
             var status = _registrar.Find("drita", "paternalaunts");
 
             Assert.IsTrue(status.IsValid);
-            Assert.IsTrue(new[] { "lika", "satya" }.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"lika", "satya"}.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]
@@ -237,7 +223,7 @@ namespace FamilyProblems.Tests
             var status = _registrar.Find("drita", "paternalaunts");
 
             Assert.IsTrue(status.IsValid);
-            Assert.IsTrue(new[] { "lika", "satya" }.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"lika", "satya"}.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]
@@ -264,7 +250,7 @@ namespace FamilyProblems.Tests
             var status = _registrar.Find("jnki", "sisterinlaws");
 
             Assert.IsTrue(status.IsValid);
-            Assert.IsTrue(new[] { "chika" }.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"chika"}.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]
@@ -291,7 +277,7 @@ namespace FamilyProblems.Tests
             var status = _registrar.Find("vyan", "brotherinlaws");
 
             Assert.IsTrue(status.IsValid);
-            Assert.IsTrue(new[] { "vich", "chit", "ish" }.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"vich", "chit", "ish"}.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]
@@ -318,7 +304,7 @@ namespace FamilyProblems.Tests
             var status = _registrar.Find("vila", "cousins");
 
             Assert.IsTrue(status.IsValid);
-            Assert.IsTrue(new[] { "drita", "vrita", "satvy", "savya", "saayan" }.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"drita", "vrita", "satvy", "savya", "saayan"}.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]
@@ -345,7 +331,7 @@ namespace FamilyProblems.Tests
             var status = _registrar.Find("vich", "father");
 
             Assert.IsTrue(status.IsValid);
-            Assert.IsTrue(new[] { "king shan" }.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"king shan"}.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]
@@ -372,7 +358,7 @@ namespace FamilyProblems.Tests
             var status = _registrar.Find("savya", "mother");
 
             Assert.IsTrue(status.IsValid);
-            Assert.IsTrue(new[] { "satya" }.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"satya"}.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]
@@ -399,7 +385,7 @@ namespace FamilyProblems.Tests
             var status = _registrar.Find("lika", "children");
 
             Assert.IsTrue(status.IsValid);
-            Assert.IsTrue(new[] { "vila", "chika" }.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"vila", "chika"}.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]
@@ -426,7 +412,7 @@ namespace FamilyProblems.Tests
             var status = _registrar.Find("saayan", "sons");
 
             Assert.IsTrue(status.IsValid);
-            Assert.IsTrue(new[] { "misa" }.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"misa"}.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]
@@ -453,7 +439,7 @@ namespace FamilyProblems.Tests
             var status = _registrar.Find("jaya", "daughters");
 
             Assert.IsTrue(status.IsValid);
-            Assert.IsTrue(new[] { "driya" }.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"driya"}.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]
@@ -480,7 +466,7 @@ namespace FamilyProblems.Tests
             var status = _registrar.Find("satvy", "brothers");
 
             Assert.IsTrue(status.IsValid);
-            Assert.IsTrue(new[] { "savya", "saayan" }.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"savya", "saayan"}.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]
@@ -507,7 +493,7 @@ namespace FamilyProblems.Tests
             var status = _registrar.Find("vich", "sisters");
 
             Assert.IsTrue(status.IsValid);
-            Assert.IsTrue(new[] { "satya" }.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"satya"}.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]
@@ -534,7 +520,7 @@ namespace FamilyProblems.Tests
             var status = _registrar.Find("lika", "granddaughters");
 
             Assert.IsTrue(status.IsValid);
-            Assert.IsTrue(new[] { "lavnya" }.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
+            Assert.IsTrue(new[] {"lavnya"}.All(x => status.Data.Any(y => x.Equals(y, StringComparison.OrdinalIgnoreCase))));
         }
 
         [TestMethod]
@@ -549,6 +535,5 @@ namespace FamilyProblems.Tests
         }
 
         #endregion
-
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Lengaburu.Core.Models
+﻿namespace Lengaburu.Domain.Models
 {
     public enum Sex
     {

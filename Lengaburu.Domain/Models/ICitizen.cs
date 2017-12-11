@@ -11,7 +11,7 @@ namespace Lengaburu.Core.Interfaces
         Sex Sex { get; set; }
         ICitizen Father { get; set; }
         ICitizen Mother { get; set; }
-        ICitizen Partner { get; }
+        ICitizen Partner { get;}
 
         IReadOnlyList<ICitizen> Children { get; }
 
